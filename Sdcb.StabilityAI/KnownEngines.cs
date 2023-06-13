@@ -8,7 +8,7 @@ public class KnownEngines
     /// <summary>
     /// Bicubic ESRGAN accelerator (Value: "esrgan-v1-x2plus")
     /// </summary>
-    public const string EsrganV1X2plus = "esrgan-v1-x2plus";
+    public const string ESRGanV1X2Plus = "esrgan-v1-x2plus";
 
     /// <summary>
     /// Stable diffusion version 1 (Value: "stable-diffusion-v1")

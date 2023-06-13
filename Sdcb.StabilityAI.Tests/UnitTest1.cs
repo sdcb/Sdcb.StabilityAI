@@ -150,4 +150,21 @@ public class UnitTest1
             await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
         }
     }
+
+    [Fact]
+    public async Task UpscaleImageTest()
+    {
+        using StabilityAIClient ai = CreateAIClient();
+        Artifact[] images = await ai.UpscaleImageAsync(new UpscaleRequest
+        {
+            Image = await File.ReadAllBytesAsync("dog.jpg"),
+            Width = 2048,
+        });
+        foreach (Artifact image in images)
+        {
+            string fileName = $"upscale-{image.Seed}.png";
+            _console.WriteLine(fileName);
+            await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
+        }
+    }
 }

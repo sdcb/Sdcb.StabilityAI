@@ -71,6 +71,8 @@ public class StabilityAIClient : IDisposable
     /// <returns>The generated image as a task of GeneratedImages object.</returns>
     public async Task<Artifact[]> TextToImageAsync(TextToImageRequest options, string engineId = KnownEngines.StableDiffusionXlBetaV222, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId));
+
         StringContent sc = new(JsonSerializer.Serialize(options));
         sc.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/text-to-image", sc, cancellationToken);
@@ -86,10 +88,26 @@ public class StabilityAIClient : IDisposable
     /// <returns>The generated image as a task of GeneratedImages object.</returns>
     public async Task<Artifact[]> ImageToImageAsync(ImageToImageRequest options, string engineId = KnownEngines.StableDiffusionXlBetaV222, CancellationToken cancellationToken = default)
     {
-        if (options?.InitImage == null)
-            throw new ArgumentNullException(nameof(options.InitImage), "The init_image parameter is required.");
+        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId));
+        if (options?.InitImage == null) throw new ArgumentNullException(nameof(options.InitImage), "The options.init_image parameter is required.");
 
         HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image", options.ToMultipartFormDataContent(), cancellationToken);
+        return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
+    }
+
+    /// <summary>
+    /// Upscales an input image using the specified upscale engine ID, and desired width or height for the output image.
+    /// </summary>
+    /// <param name="options">The upscale request options, including image bytes and desired width or height.</param>
+    /// <param name="engineId">The upscale engine to use, known values: <see cref="KnownEngines"/>.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>The upscaled image as a byte array in a Task.</returns>
+    public async Task<Artifact[]> UpscaleImageAsync(UpscaleRequest options, string engineId = KnownEngines.StableDiffusionX4LatentUpscaler, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId), "The engineId parameter is required.");
+        if (options?.Image == null) throw new ArgumentNullException(nameof(options.Image), "The options.image parameter is required.");
+
+        HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image/upscale", options.ToMultipartFormDataContent(), cancellationToken);
         return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
     }
 
