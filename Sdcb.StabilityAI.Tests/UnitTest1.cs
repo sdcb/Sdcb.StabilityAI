@@ -41,6 +41,7 @@ public class UnitTest1
         Assert.NotNull(account);
         Assert.NotEmpty(account.Id);
         Assert.NotEmpty(account.Email);
+        Assert.True(account.Organizations[0].IsDefault);
     }
 
     [Fact]
@@ -71,7 +72,7 @@ public class UnitTest1
     public async Task TextToImageTest()
     {
         using StabilityAIClient ai = CreateAIClient();
-        Artifact[] images = await ai.GenerateImageFromTextAsync(new ImageGenerationOptions()
+        Artifact[] images = await ai.TextToImageAsync(new ImageGenerationOptions()
         {
             Samples = 2,
             Width = 128, 
@@ -84,7 +85,7 @@ public class UnitTest1
             }
         });
         Assert.Equal(2, images.Length);
-        Assert.Equal(1u, images[0].Seed);
+        Assert.Equal(1u, images.Min(x => x.Seed));
         foreach (Artifact image in images)
         {
             string fileName = $"generated-{image.Seed}.png";

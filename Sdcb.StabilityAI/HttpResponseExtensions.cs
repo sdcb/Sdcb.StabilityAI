@@ -5,11 +5,10 @@ namespace Sdcb.StabilityAI;
 
 internal static class HttpResponseExtensions
 {
-    public static JsonSerializerOptions JsonSerializerOptions { get; }
+    public static JsonSerializerOptions JsonSerializerOptions { get; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
     static HttpResponseExtensions()
     {
-        JsonSerializerOptions = new JsonSerializerOptions();
         JsonSerializerOptions.Converters.Add(new FinishReasonsConverter());
     }
 
