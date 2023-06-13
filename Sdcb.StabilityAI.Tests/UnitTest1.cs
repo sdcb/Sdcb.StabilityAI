@@ -167,4 +167,29 @@ public class UnitTest1
             await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
         }
     }
+
+    [Fact]
+    public async Task MaskImageTest()
+    {
+        using StabilityAIClient ai = CreateAIClient();
+        Artifact[] images = await ai.MaskImageAsync(new MaskImageRequest
+        {
+            InitImage = await File.ReadAllBytesAsync("dog.jpg"),
+            MaskImage = await File.ReadAllBytesAsync("mask.jpg"), 
+            TextPrompts = new TextPrompt[]
+            {
+                new TextPrompt("empty"),
+            },
+            MaskSource = "MASK_IMAGE_WHITE", 
+            Samples = 2,
+            Seed = 1, 
+            Steps = 20,
+        });
+        foreach (Artifact image in images)
+        {
+            string fileName = $"mask-{image.Seed}.png";
+            _console.WriteLine(fileName);
+            await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
+        }
+    }
 }

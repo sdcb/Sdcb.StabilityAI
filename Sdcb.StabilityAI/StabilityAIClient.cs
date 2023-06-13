@@ -89,7 +89,6 @@ public class StabilityAIClient : IDisposable
     public async Task<Artifact[]> ImageToImageAsync(ImageToImageRequest options, string engineId = KnownEngines.StableDiffusionXlBetaV222, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId));
-        if (options?.InitImage == null) throw new ArgumentNullException(nameof(options.InitImage), "The options.init_image parameter is required.");
 
         HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image", options.ToMultipartFormDataContent(), cancellationToken);
         return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
@@ -104,10 +103,24 @@ public class StabilityAIClient : IDisposable
     /// <returns>The upscaled image as a byte array in a Task.</returns>
     public async Task<Artifact[]> UpscaleImageAsync(UpscaleRequest options, string engineId = KnownEngines.StableDiffusionX4LatentUpscaler, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId), "The engineId parameter is required.");
-        if (options?.Image == null) throw new ArgumentNullException(nameof(options.Image), "The options.image parameter is required.");
+        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId));
 
         HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image/upscale", options.ToMultipartFormDataContent(), cancellationToken);
+        return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
+    }
+
+    /// <summary>
+    /// Generates an image based on the specified mask using the given engine ID and MaskImageRequest options.
+    /// </summary>
+    /// <param name="options">The MaskImageRequest options, including source image, mask image, and other related settings.</param>
+    /// <param name="engineId">The engine to use for image masking.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>An array of generated images as Artifact objects in a Task.</returns>
+    public async Task<Artifact[]> MaskImageAsync(MaskImageRequest options, string engineId = KnownEngines.StableInpaintingV10, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(engineId)) throw new ArgumentNullException(nameof(engineId));
+
+        HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image/masking", options.ToMultipartFormDataContent(), cancellationToken);
         return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
     }
 

@@ -1,11 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Sdcb.StabilityAI;
+﻿namespace Sdcb.StabilityAI;
 
 /// <summary>
-/// Represents the options for image to image generation.
+/// Represents the options for Mask Image generation.
 /// </summary>
-public class ImageToImageRequest
+public class MaskImageRequest
 {
     /// <summary>
     /// Gets or sets the required array of text prompts to use for generation.
@@ -18,34 +16,20 @@ public class ImageToImageRequest
     public required byte[] InitImage { get; set; }
 
     /// <summary>
-    /// Gets or sets how the init_image influences the result.
-    /// Default value: IMAGE_STRENGTH.
-    /// Values: IMAGE_STRENGTH, STEP_SCHEDULE.
+    /// Gets or sets the mask source.
+    /// Determines where to source the mask from.
+    /// Enum: MASK_IMAGE_WHITE, MASK_IMAGE_BLACK, INIT_IMAGE_ALPHA
     /// </summary>
-    public string InitImageMode { get; set; } = "IMAGE_STRENGTH";
+    public required string MaskSource { get; set; } = "MASK_IMAGE_WHITE";
 
     /// <summary>
-    /// Gets or sets how much influence the init_image has on the diffusion process.
-    /// Default value: 0.35.
-    /// Range: [0, 1].
+    /// Gets or sets the required grayscale mask that allows for influence over which pixels are eligible for diffusion and at what strength.
+    /// Must be the same dimensions as the init_image.
     /// </summary>
-    public float ImageStrength { get; set; } = 0.35f;
+    public required byte[] MaskImage { get; set; }
 
     /// <summary>
-    /// Gets or sets the step schedule start value. Skips a proportion of the start of the diffusion steps, allowing the init_image to influence the final generated image.
-    /// Default value: 0.65.
-    /// Range: [0, 1].
-    /// </summary>
-    public double StepScheduleStart { get; set; } = 0.65;
-
-    /// <summary>
-    /// Gets or sets the step schedule end value. Skips a proportion of the end of the diffusion steps, allowing the init_image to influence the final generated image.
-    /// Range: [0, 1].
-    /// </summary>
-    public double? StepScheduleEnd { get; set; }
-
-    /// <summary>
-    /// Gets or sets how strictly the diffusion process adheres to the prompt text.
+    /// Gets or sets how strictly the diffusion process adheres to the prompt text (higher values keep your image closer to your prompt).
     /// Default value: 7.
     /// Range: [0, 35].
     /// </summary>
@@ -53,15 +37,14 @@ public class ImageToImageRequest
 
     /// <summary>
     /// Gets or sets the clip guidance preset.
+    /// Enum: FAST_BLUE, FAST_GREEN, NONE, SIMPLE, SLOW, SLOWER, SLOWEST
     /// Default value: NONE.
-    /// Enum: FAST_BLUE, FAST_GREEN, NONE, SIMPLE, SLOW, SLOWER, SLOWEST.
     /// </summary>
     public string ClipGuidancePreset { get; set; } = "NONE";
 
     /// <summary>
-    /// Gets or sets the sampler to use for the diffusion process.
-    /// Enum: DDIM, DDPM, K_DPMPP_2M, K_DPMPP_2S_ANCESTRAL, K_DPM_2, K_DPM_2_ANCESTRAL, K_EULER, K_EULER_ANCESTRAL, K_HEUN, K_LMS.
-    /// If this value is omitted, an appropriate sampler will be selected automatically.
+    /// Which sampler to use for the diffusion process.
+    /// Enum: DDIM, DDPM, K_DPMPP_2M, K_DPMPP_2S_ANCESTRAL, K_DPM_2, K_DPM_2_ANCESTRAL, K_EULER, K_EULER_ANCESTRAL, K_HEUN, K_LMS
     /// </summary>
     public string? Sampler { get; set; }
 
@@ -73,10 +56,9 @@ public class ImageToImageRequest
     public int Samples { get; set; } = 1;
 
     /// <summary>
-    /// Gets or sets the random noise seed.
+    /// Gets or sets the random noise seed (omit this option or use for a random seed).
     /// Default value: 0.
     /// Range: [0, 4294967295].
-    /// Omit this option or use 0 for a random seed.
     /// </summary>
     public uint Seed { get; set; } = 0;
 
@@ -89,8 +71,7 @@ public class ImageToImageRequest
 
     /// <summary>
     /// Gets or sets the style preset to guide the image model towards a particular style.
-    /// Enum: 3d-model, analog-film, anime, cinematic, comic-book, digital-art, enhance, fantasy-art, isometric, line-art, low-poly, modeling-compound, neon-punk, origami, photographic, pixel-art, tile-texture.
-    /// The list of style presets is subject to change.
+    /// Enum: 3d-model, analog-film, anime, cinematic, comic-book, digital-art, enhance, fantasy-art, isometric, line-art, low-poly, modeling-compound, neon-punk, origami, photographic, pixel-art, tile-texture
     /// </summary>
     public string? StylePreset { get; set; }
 
@@ -100,6 +81,10 @@ public class ImageToImageRequest
     /// </summary>
     public object? Extras { get; set; }
 
+    /// <summary>
+    /// Converts the MaskImageRequest object to a MultipartFormDataContent object for making HTTP requests.
+    /// </summary>
+    /// <returns>A MultipartFormDataContent object containing the properties of the MaskImageRequest.</returns>
     public MultipartFormDataContent ToMultipartFormDataContent()
     {
         var content = new MultipartFormDataContent();
@@ -114,24 +99,9 @@ public class ImageToImageRequest
         }
 
         content.Add(new ByteArrayContent(InitImage), "init_image");
-
-        content.Add(new StringContent(InitImageMode), "init_image_mode");
-        if (InitImageMode == "IMAGE_STRENGTH")
-        {
-            content.Add(new StringContent(ImageStrength.ToString()), "image_strength");
-        }
-        else if (InitImageMode == "STEP_SCHEDULE")
-        {
-            content.Add(new StringContent(StepScheduleStart.ToString()), "step_schedule_start");
-
-            if (StepScheduleEnd.HasValue)
-            {
-                content.Add(new StringContent(StepScheduleEnd.Value.ToString()), "step_schedule_end");
-            }
-        }       
-
+        content.Add(new StringContent(MaskSource), "mask_source");
+        content.Add(new ByteArrayContent(MaskImage), "mask_image");
         content.Add(new StringContent(CfgScale.ToString()), "cfg_scale");
-
         content.Add(new StringContent(ClipGuidancePreset), "clip_guidance_preset");
 
         if (!string.IsNullOrEmpty(Sampler))
@@ -140,9 +110,7 @@ public class ImageToImageRequest
         }
 
         content.Add(new StringContent(Samples.ToString()), "samples");
-
         content.Add(new StringContent(Seed.ToString()), "seed");
-
         content.Add(new StringContent(Steps.ToString()), "steps");
 
         if (!string.IsNullOrEmpty(StylePreset))
