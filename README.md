@@ -18,6 +18,8 @@ All functions are in class `StabilityAIClient` and all are async.
 
 ## Usage
 
+First you need to get a DreamStudios API key from https://dreamstudio.ai/account and then you can use it to create an instance of the `StabilityAIClient` class.
+
 ### Example 1: Get User Account
 
 In this example, we demonstrate how to get user account information using the StabilityAIClient class.
