@@ -72,7 +72,7 @@ public class UnitTest1
     public async Task TextToImageTest()
     {
         using StabilityAIClient ai = CreateAIClient();
-        Artifact[] images = await ai.TextToImageAsync(new ImageGenerationOptions()
+        Artifact[] images = await ai.TextToImageAsync(new TextToImageRequest()
         {
             Samples = 2,
             Width = 128, 

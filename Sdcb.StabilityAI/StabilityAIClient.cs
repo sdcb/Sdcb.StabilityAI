@@ -85,7 +85,7 @@ public class StabilityAIClient : IDisposable
     /// </param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The generated image as a task of GeneratedImages object.</returns>
-    public async Task<Artifact[]> TextToImageAsync(ImageGenerationOptions options, string engineId = "stable-diffusion-xl-beta-v2-2-2", CancellationToken cancellationToken = default)
+    public async Task<Artifact[]> TextToImageAsync(TextToImageRequest options, string engineId = "stable-diffusion-xl-beta-v2-2-2", CancellationToken cancellationToken = default)
     {
         StringContent sc = new(JsonSerializer.Serialize(options));
         sc.Headers.ContentType = new MediaTypeHeaderValue("application/json");

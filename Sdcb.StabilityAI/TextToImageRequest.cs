@@ -5,7 +5,7 @@ namespace Sdcb.StabilityAI;
 /// <summary>
 /// Represents the options for image generation.
 /// </summary>
-public class ImageGenerationOptions
+public class TextToImageRequest
 {
     /// <summary>
     /// Gets or sets the height of the image in pixels.
