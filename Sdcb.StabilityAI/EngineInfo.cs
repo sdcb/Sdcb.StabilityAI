@@ -5,7 +5,7 @@ namespace Sdcb.StabilityAI;
 /// <summary>
 /// Represents an Engine class to store engine information.
 /// </summary>
-public class Engine
+public class EngineInfo
 {
     /// <summary>
     /// Gets or sets the description of the engine.

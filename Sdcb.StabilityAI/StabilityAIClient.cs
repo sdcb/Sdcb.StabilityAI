@@ -56,36 +56,20 @@ public class StabilityAIClient : IDisposable
     /// </summary>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The engine list as a task of <see cref="List{Engine}"/> object.</returns>
-    public async Task<Engine[]> GetAllEnginesAsync(CancellationToken cancellationToken = default)
+    public async Task<EngineInfo[]> GetAllEnginesAsync(CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _httpClient.GetAsync("v1/engines/list", cancellationToken);
-        return await response.DeserializeAsync<Engine[]>(cancellationToken);
+        return await response.DeserializeAsync<EngineInfo[]>(cancellationToken);
     }
 
     /// <summary>
     /// Generates an image from text using the specified engine ID and image generation options.
     /// </summary>
     /// <param name="options">The image generation options to be used for generating the image.</param>
-    /// <param name="engineId">
-    /// Known engine names:
-    /// <list type="bullet">
-    /// <item>esrgan-v1-x2plus</item>
-    /// <item>stable-diffusion-v1</item>
-    /// <item>stable-diffusion-v1-5</item>
-    /// <item>stable-diffusion-512-v2-0</item>
-    /// <item>stable-diffusion-768-v2-0</item>
-    /// <item>stable-diffusion-depth-v2-0</item>
-    /// <item>stable-diffusion-512-v2-1</item>
-    /// <item>stable-diffusion-768-v2-1</item>
-    /// <item>stable-diffusion-xl-beta-v2-2-2</item>
-    /// <item>stable-diffusion-x4-latent-upscaler</item>
-    /// <item>stable-inpainting-v1-0</item>
-    /// <item>stable-inpainting-512-v2-0</item>
-    /// </list>
-    /// </param>
+    /// <param name="engineId">The text to image engine to use, known values: <see cref="KnownEngines"/>.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The generated image as a task of GeneratedImages object.</returns>
-    public async Task<Artifact[]> TextToImageAsync(TextToImageRequest options, string engineId = "stable-diffusion-xl-beta-v2-2-2", CancellationToken cancellationToken = default)
+    public async Task<Artifact[]> TextToImageAsync(TextToImageRequest options, string engineId = KnownEngines.StableDiffusionXlBetaV222, CancellationToken cancellationToken = default)
     {
         StringContent sc = new(JsonSerializer.Serialize(options));
         sc.Headers.ContentType = new MediaTypeHeaderValue("application/json");

@@ -64,7 +64,7 @@ public class UnitTest1
     public async Task GetAllEnginesTest()
     {
         using StabilityAIClient ai = CreateAIClient();
-        Engine[] engines = await ai.GetAllEnginesAsync();
+        EngineInfo[] engines = await ai.GetAllEnginesAsync();
         Assert.NotEmpty(engines);
     }
 
