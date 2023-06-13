@@ -90,7 +90,64 @@ public class UnitTest1
         {
             string fileName = $"generated-{image.Seed}.png";
             _console.WriteLine(fileName);
-            await File.WriteAllBytesAsync($"generated-{image.Seed}.png", Convert.FromBase64String(image.Base64));
+            await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
+        }
+    }
+
+    [Fact]
+    public async Task ImageToImage_STEP_SCHEDULE_Test()
+    {
+        using StabilityAIClient ai = CreateAIClient();
+        Artifact[] images = await ai.ImageToImageAsync(new ImageToImageRequest
+        {
+            InitImage = await File.ReadAllBytesAsync("dog.jpg"),
+            Samples = 2,
+            Seed = 1,
+            Steps = 20, 
+            InitImageMode = "STEP_SCHEDULE",
+            StepScheduleStart = 0.1, 
+            StepScheduleEnd = 0.2,
+            TextPrompts = new TextPrompt[]
+            {
+                new TextPrompt("3 cat"),
+            }, 
+            StylePreset = "anime",
+        });
+        Assert.Equal(2, images.Length);
+        Assert.Equal(1u, images.Min(x => x.Seed));
+        foreach (Artifact image in images)
+        {
+            string fileName = $"img2img-sc-{image.Seed}.png";
+            _console.WriteLine(fileName);
+            await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
+        }
+    }
+
+    [Fact]
+    public async Task ImageToImage_IMAGE_STRENGTH_Test()
+    {
+        using StabilityAIClient ai = CreateAIClient();
+        Artifact[] images = await ai.ImageToImageAsync(new ImageToImageRequest
+        {
+            InitImage = await File.ReadAllBytesAsync("dog.jpg"),
+            Samples = 2,
+            Seed = 1,
+            Steps = 20,
+            InitImageMode = "IMAGE_STRENGTH",
+            ImageStrength = 0.65f,
+            TextPrompts = new TextPrompt[]
+            {
+                new TextPrompt("3 cat"),
+            },
+            StylePreset = "anime",
+        });
+        Assert.Equal(2, images.Length);
+        Assert.Equal(1u, images.Min(x => x.Seed));
+        foreach (Artifact image in images)
+        {
+            string fileName = $"img2img-is-{image.Seed}.png";
+            _console.WriteLine(fileName);
+            await File.WriteAllBytesAsync(fileName, Convert.FromBase64String(image.Base64));
         }
     }
 }

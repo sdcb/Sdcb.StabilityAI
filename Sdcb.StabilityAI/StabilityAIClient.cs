@@ -77,6 +77,22 @@ public class StabilityAIClient : IDisposable
         return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
     }
 
+    /// <summary>
+    /// Generates a new image from an input image and prompts using the specified engine ID and image generation options.
+    /// </summary>
+    /// <param name="options">The image-to-image generation options to be used for generating the new image.</param>
+    /// <param name="engineId">The image-to-image engine to use, known values: <see cref="KnownEngines"/>.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>The generated image as a task of GeneratedImages object.</returns>
+    public async Task<Artifact[]> ImageToImageAsync(ImageToImageRequest options, string engineId = KnownEngines.StableDiffusionXlBetaV222, CancellationToken cancellationToken = default)
+    {
+        if (options?.InitImage == null)
+            throw new ArgumentNullException(nameof(options.InitImage), "The init_image parameter is required.");
+
+        HttpResponseMessage response = await _httpClient.PostAsync($"v1/generation/{engineId}/image-to-image", options.ToMultipartFormDataContent(), cancellationToken);
+        return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
+    }
+
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)

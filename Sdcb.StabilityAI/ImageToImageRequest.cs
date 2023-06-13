@@ -17,7 +17,7 @@ public class ImageToImageRequest
     /// Gets or sets the required image used to initialize the diffusion process, in lieu of random noise.
     /// </summary>
     [JsonPropertyName("init_image")]
-    public required string InitImage { get; set; }
+    public required byte[] InitImage { get; set; }
 
     /// <summary>
     /// Gets or sets how the init_image influences the result.
@@ -113,4 +113,62 @@ public class ImageToImageRequest
     /// </summary>
     [JsonPropertyName("extras")]
     public object? Extras { get; set; }
+
+    public MultipartFormDataContent ToMultipartFormDataContent()
+    {
+        var content = new MultipartFormDataContent();
+
+        for (int i = 0; i < TextPrompts.Length; i++)
+        {
+            content.Add(new StringContent(TextPrompts[i].Text), $"text_prompts[{i}][text]");
+            if (TextPrompts[i].Weight != null)
+            {
+                content.Add(new StringContent(TextPrompts[i].Text), $"text_prompts[{i}][weight]");
+            }
+        }
+
+        content.Add(new ByteArrayContent(InitImage), "init_image");
+
+        content.Add(new StringContent(InitImageMode), "init_image_mode");
+        if (InitImageMode == "IMAGE_STRENGTH")
+        {
+            content.Add(new StringContent(ImageStrength.ToString()), "image_strength");
+        }
+        else if (InitImageMode == "STEP_SCHEDULE")
+        {
+            content.Add(new StringContent(StepScheduleStart.ToString()), "step_schedule_start");
+
+            if (StepScheduleEnd.HasValue)
+            {
+                content.Add(new StringContent(StepScheduleEnd.Value.ToString()), "step_schedule_end");
+            }
+        }       
+
+        content.Add(new StringContent(CfgScale.ToString()), "cfg_scale");
+
+        content.Add(new StringContent(ClipGuidancePreset), "clip_guidance_preset");
+
+        if (!string.IsNullOrEmpty(Sampler))
+        {
+            content.Add(new StringContent(Sampler), "sampler");
+        }
+
+        content.Add(new StringContent(Samples.ToString()), "samples");
+
+        content.Add(new StringContent(Seed.ToString()), "seed");
+
+        content.Add(new StringContent(Steps.ToString()), "steps");
+
+        if (!string.IsNullOrEmpty(StylePreset))
+        {
+            content.Add(new StringContent(StylePreset), "style_preset");
+        }
+
+        if (Extras != null)
+        {
+            content.Add(new StringContent(Extras.ToString()), "extras");
+        }
+
+        return content;
+    }
 }
