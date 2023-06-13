@@ -23,7 +23,7 @@ All functions are in class `StabilityAIClient` and all are async.
 In this example, we demonstrate how to get user account information using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -39,7 +39,7 @@ Console.WriteLine($"Email: {userAccount.Email}");
 In this example, we demonstrate how to get the account balance using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -54,7 +54,7 @@ Console.WriteLine($"Remaining balance: ${userBalance.Balance}");
 In this example, we demonstrate how to get the list of available engines using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -72,7 +72,7 @@ foreach (EngineInfo engine in engineList)
 In this example, we demonstrate how to generate an image from text using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -107,7 +107,7 @@ foreach (Artifact image in generatedImages)
 In this example, we demonstrate how to generate a new image from an input image and prompts using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -142,7 +142,7 @@ foreach (Artifact image in generatedImages)
 In this example, we demonstrate how to upscale an input image using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
@@ -170,7 +170,7 @@ foreach (Artifact image in upscaledImages)
 In this example, we demonstrate how to generate an image based on a specified mask using the StabilityAIClient class.
 
 ```csharp
-using StabilityAI;
+using Sdcb.StabilityAI;
 
 // Create an instance of the StabilityAIClient using your API key
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
