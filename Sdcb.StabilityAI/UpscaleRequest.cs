@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sdcb.StabilityAI;
+﻿namespace Sdcb.StabilityAI;
 
 /// <summary>
 /// Represents an upscale request with image bytes, desired width or height for the output image.
