@@ -5,7 +5,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
+    <Description>Unofficial Stability AI rest API C# SDK</Description>
+    <Copyright>MIT</Copyright>
+    <PackageProjectUrl>https://github.com/sdcb/Sdcb.StabilityAI</PackageProjectUrl>
+    <PackageIcon>S_AI_Favicon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/sdcb/Sdcb.StabilityAI</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Stability AI;AI;text to image;txt2img;</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\S_AI_Favicon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="PolySharp" Version="1.13.2">
