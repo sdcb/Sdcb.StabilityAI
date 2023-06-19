@@ -22,13 +22,13 @@ public class UnitTest1
         _console = console;
     }
 
-    StabilityAIClient CreateAIClient()
+    static StabilityAIClient CreateAIClient()
     {
         string? apiKey = Config["STABILITY_API_KEY"];
         return new StabilityAIClient(apiKey);
     }
 
-    StabilityAIClient CreateNegativeAIClient()
+    static StabilityAIClient CreateNegativeAIClient()
     {
         return new StabilityAIClient("bad-api-key");
     }
