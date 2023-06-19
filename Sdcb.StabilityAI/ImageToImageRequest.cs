@@ -100,6 +100,10 @@ public class ImageToImageRequest
     /// </summary>
     public object? Extras { get; set; }
 
+    /// <summary>
+    /// Converts ImageToImageRequest to MultipartFormDataContent
+    /// </summary>
+    /// <returns>MultipartFormDataContent instance that contains the converted ImageToImageRequest object</returns>
     public MultipartFormDataContent ToMultipartFormDataContent()
     {
         var content = new MultipartFormDataContent();

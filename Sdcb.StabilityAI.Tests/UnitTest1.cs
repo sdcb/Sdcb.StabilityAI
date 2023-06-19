@@ -56,8 +56,8 @@ public class UnitTest1
     public async Task GetUserBalanceTest()
     {
         using StabilityAIClient ai = CreateAIClient();
-        UserBalance balance = await ai.GetUserBalanceAsync();
-        Assert.NotNull(balance);
+        decimal balance = await ai.GetUserBalanceAsync();
+        Assert.True(balance >= 0);
     }
 
     [Fact]

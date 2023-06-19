@@ -45,10 +45,10 @@ public class StabilityAIClient : IDisposable
     /// </summary>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The user balance as a task of <see cref="UserBalance"/> object.</returns>
-    public async Task<UserBalance> GetUserBalanceAsync(CancellationToken cancellationToken = default)
+    public async Task<decimal> GetUserBalanceAsync(CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _httpClient.GetAsync("v1/user/balance", cancellationToken);
-        return await response.DeserializeAsync<UserBalance>(cancellationToken);
+        return (await response.DeserializeAsync<UserBalance>(cancellationToken)).Credits;
     }
 
     /// <summary>
@@ -124,6 +124,10 @@ public class StabilityAIClient : IDisposable
         return (await response.DeserializeAsync<GeneratedImages>(cancellationToken)).Artifacts;
     }
 
+    /// <summary>
+    /// Disposes the resources used by the <see cref="StabilityAIClient"/> instance.
+    /// </summary>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
@@ -132,6 +136,9 @@ public class StabilityAIClient : IDisposable
         }
     }
 
+    /// <summary>
+    /// Finilizer for the StabilityAIClient class.
+    /// </summary>
     ~StabilityAIClient()
     {
         Dispose(false);

@@ -12,7 +12,11 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/sdcb/Sdcb.StabilityAI</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Stability AI;AI;text to image;txt2img;</PackageTags>
+    <PackageTags>sdcb;Stability AI;AI;text to image;txt2img;</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
