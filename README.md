@@ -47,8 +47,8 @@ using Sdcb.StabilityAI;
 StabilityAIClient aiClient = new StabilityAIClient("your_api_key_here");
 
 // Get the user balance and display it
-UserBalance userBalance = await aiClient.GetUserBalanceAsync();
-Console.WriteLine($"Remaining balance: ${userBalance.Balance}");
+decimal balance = await aiClient.GetUserBalanceAsync();
+Console.WriteLine($"Remaining balance: ${balance}");
 ```
 
 ### Example 3: Get Engine List
